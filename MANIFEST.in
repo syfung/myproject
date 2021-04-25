@@ -1,0 +1,5 @@
+include mychordsheets/schema.sql
+graft mychordsheets/static
+graft mychordsheets/templates
+global-exclude *.pyc
+global-exclude *~
