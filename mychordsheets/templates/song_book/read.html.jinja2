@@ -1,0 +1,42 @@
+{% extends 'base.html.jinja2' %}
+
+{% block header %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='song.css') }}">
+  <h1>{% block title %}{{ song.title }}{% endblock %}
+    <small>
+      by {{ song.author }}
+      {% if song.key != None %}Key: {{ song.key }}{% endif %}
+      {% if song.time != None %}Time: {{ song.time }}{% endif %}
+    </small>
+  </h1>
+  {% if g.user['id'] == creator_id %}
+    <a class="action" href="{{ url_for('song_book.update', id=id) }}">Edit</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  
+  <div class="cnl_page">
+    {% for section in song.sections %}
+      <div class="section">  
+	<strong>{{ section.sectionName }}</strong>
+	<div class="cnl_line"></div>
+	{% for line in section.songlines %}
+	  {% for chord,phrase in line.getChordsPhrases() -%}
+	    <div class="cnl">
+	      <div class="chord">
+		<strong>{{chord}}</strong>&nbsp;
+	      </div>
+	      <div class="lyric">{{ phrase|replace(' ', '\xA0') }}</div>
+	    </div>
+	  {%- endfor %}
+	  <div class="cnl_line"></div>
+	  <div class="cnl_clear"></div>
+	{% endfor %}
+	<div class="cnl_line"></div>
+	<div class="cnl_clear"></div>
+      </div>
+      <div class="cnl_line">&nbsp;</div>
+    {% endfor %}  
+  </div>
+{% endblock %}

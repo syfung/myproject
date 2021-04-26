@@ -1,0 +1,38 @@
+@media (min-width: 767.98px) {
+    div.cnl_page {
+	height: 90vh;
+	width: 45em;
+    }
+}
+div.cnl_page {
+    color: black
+    width: 45em;
+    orphans: 1;
+    widows: 1;
+    column-count: 2;
+    column-fill: balance;
+    column-gap: 1em;
+}
+div.cnl_line {
+    margin: .2em;
+    min-height: 0.5px;
+}
+div.section {
+    margin: 0;
+    -webkit-column-break-inside: avoid; /* Chrome, Safari */
+    page-break-inside: avoid;           /* Theoretically FF 20+ */
+    break-inside: avoid-column;         /* IE 11 */
+    display:table;                      /* Actually FF 20+ */
+}
+div.cnl {
+    display: inline-block;
+}
+div.cnl_clear {
+    clear: both;
+}
+div.chord {
+    color: red;
+}
+div.lyric {
+    white-space: pre; 
+}

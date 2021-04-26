@@ -5,6 +5,7 @@ from werkzeug.exceptions import abort
 
 from mychordsheets.auth import login_required
 from mychordsheets.db import get_db
+from mychordsheets.song import Song
 
 
 bp = Blueprint('song_book', __name__)
@@ -20,6 +21,12 @@ def index():
     ).fetchall()
 
     return render_template('song_book/index.html.jinja2', songs=songs)
+
+@bp.route('/<int:id>/read')
+def read(id):
+    s = get_song(id, check_author=False)
+    song = Song(s['title'], s['author'], s['body'])
+    return render_template('song_book/read.html.jinja2', song=song, id=id, creator_id=s['creator_id'])
 
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -38,13 +45,15 @@ def create():
             flash(error)
         else:
             db = get_db()
-            db.execute(
+            c = db.cursor()
+            c.execute(
                 'INSERT INTO song (title, author, body, creator_id)'
                 ' VALUES (?, ?, ?, ?)',
                 (title, author, body, g.user['id'])
             )
+            id = c.lastrowid
             db.commit()
-            return redirect(url_for('song_book.index'))
+            return redirect(url_for('song_book.read', id=id))
 
     return render_template('song_book/create.html.jinja2')
 
@@ -89,7 +98,7 @@ def update(id):
                 (title, body, id)
             )
             db.commit()
-            return redirect(url_for('song_book.index'))
+            return redirect(url_for('song_book.read', id=id))
 
     return render_template('song_book/update.html.jinja2', song=song)
 
@@ -97,8 +106,8 @@ def update(id):
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
-    get_post(id)
+    get_song(id)
     db = get_db()
-    db.execute('DELETE FROM post WHERE id = ?', (id,))
+    db.execute('DELETE FROM song WHERE id = ?', (id,))
     db.commit()
     return redirect(url_for('song_book.index'))
