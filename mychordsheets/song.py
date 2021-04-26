@@ -97,8 +97,6 @@ class Song:
             s += '\n'.join([str(section) for section in self.sections])
         return s
     
-    def __repr__(self):
-        return str(self)
 
 class Section:
     def __init__(self, sectionName):
@@ -113,9 +111,7 @@ class Section:
                     )
         else:
             return ''
-        
-    def __repr__(self):
-        return str(self)
+
 
 class Songline:
     def __init__(self):
@@ -137,8 +133,5 @@ class Songline:
                 + ''.join([str(phrase) for phrase in self.phrases]) 
                 + '\n'
                 )
-    
-    def __repr__(self):
-        return str(self)
 
 
