@@ -6,7 +6,9 @@ from werkzeug.exceptions import abort
 from mychordsheets.auth import login_required
 from mychordsheets.db import get_db
 
-bp = Blueprint('blog', __name__)
+
+bp = Blueprint('song_book', __name__)
+
 
 @bp.route('/')
 def index():
@@ -16,7 +18,9 @@ def index():
         ' FROM song s JOIN user u ON s.creator_id = u.id'
         ' ORDER BY created DESC'
     ).fetchall()
-    return render_template('blog/index.html.jinja2', songs=songs)
+
+    return render_template('song_book/index.html.jinja2', songs=songs)
+
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
@@ -40,9 +44,10 @@ def create():
                 (title, author, body, g.user['id'])
             )
             db.commit()
-            return redirect(url_for('blog.index'))
+            return redirect(url_for('song_book.index'))
 
-    return render_template('blog/create.html.jinja2')
+    return render_template('song_book/create.html.jinja2')
+
 
 def get_song(id, check_author=True):
     song = get_db().execute(
@@ -59,6 +64,7 @@ def get_song(id, check_author=True):
         abort(403)
 
     return song
+
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
@@ -83,9 +89,10 @@ def update(id):
                 (title, body, id)
             )
             db.commit()
-            return redirect(url_for('blog.index'))
+            return redirect(url_for('song_book.index'))
 
-    return render_template('blog/update.html.jinja2', song=song)
+    return render_template('song_book/update.html.jinja2', song=song)
+
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
@@ -94,4 +101,4 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM post WHERE id = ?', (id,))
     db.commit()
-    return redirect(url_for('blog.index'))
+    return redirect(url_for('song_book.index'))
