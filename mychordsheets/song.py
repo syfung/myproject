@@ -20,6 +20,8 @@ class Song:
             self.time = timesig.strip()
         else:
             self.time = timesig
+
+        self.body = []
             
         # Main section
         section = Section('')
@@ -40,9 +42,11 @@ class Song:
                 elif tag.strip().lower() == 'author':
                     self.key = line[i+1:].strip()
                 elif tag.strip().lower() == 'key':
+                    self.body.append(line)
                     self.key = line[i+1:].strip()
                 elif tag.strip().lower() == 'time':
-                     self.time = line[i+1:].strip()
+                    self.body.append(line)
+                    self.time = line[i+1:].strip()
                 else:
                      # New section, or else it is always in the default
                      section = Section(tag)
@@ -51,6 +55,7 @@ class Song:
             # Songlines
             #TODO fix minus one erro when the phrase end with a chord
             else:
+                self.body.append(line)
                 songline = Songline()
                 j = 0
                 k = 0
@@ -77,6 +82,8 @@ class Song:
                 section.songlines.append(songline)
                 # print(songline.chords, songline.phrases)
                 
+    def get_body_text(self):
+        return '\n'.join([body for body in self.body])
         
     def __str__(self):   
         s = (self.title 
@@ -134,4 +141,6 @@ class Songline:
                 + '\n'
                 )
 
-
+if __name__ == "__main__":
+    s = Song('test', 'test', 'Key: E\nTime: 4/4 \n讓[|] [Am](我)們回到那一[|] [D](秒)　你好不[|] [Bb](好)')
+    print(s.get_body_text())
